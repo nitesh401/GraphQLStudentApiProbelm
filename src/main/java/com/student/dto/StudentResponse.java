@@ -10,4 +10,5 @@ import lombok.*;
 public class StudentResponse {
     private String status;
     private Long studentId;
+    private String message;
 }

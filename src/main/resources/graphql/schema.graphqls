@@ -1,18 +1,31 @@
 type Student {
-    id: ID
-    name: String
+    id: ID!
+    name: String!
     contact: String
 }
 
 type StudentResponse {
-    status: String
+    status: String!
     studentId: ID
+    message: String
+}
+
+type StudentPage {
+    students: [Student]
+    totalCount: Int
+}
+
+input StudentInput {
+    name: String!
+    contact: String
 }
 
 type Query {
-    getStudents: [Student]
+    getStudents(page: Int = 0, size: Int = 10, nameFilter: String): StudentPage
 }
 
 type Mutation {
-    addStudent(name: String, contact: String): StudentResponse
+    addStudent(input: StudentInput!): StudentResponse
+    updateStudent(id: ID!, input: StudentInput!): StudentResponse
+    deleteStudent(id: ID!): StudentResponse
 }

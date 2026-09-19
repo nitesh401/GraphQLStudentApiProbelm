@@ -1,5 +1,6 @@
 package com.student.controller;
 
+import com.student.dto.StudentPage;
 import com.student.dto.StudentResponse;
 import com.student.entity.Student;
 import com.student.service.StudentService;
@@ -7,7 +8,6 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
-import java.util.List;
 
 @Controller
 public class StudentGraphQLController {
@@ -18,16 +18,31 @@ public class StudentGraphQLController {
     }
 
     @QueryMapping
-    public List<Student> getStudents() {
-        return studentService.getAllStudents();
+    public StudentPage getStudents(@Argument int page, @Argument int size, @Argument String nameFilter) {
+        return studentService.getStudents(page, size, nameFilter);
     }
 
     @MutationMapping
-    public StudentResponse addStudent(@Argument String name, @Argument String contact) {
+    public StudentResponse addStudent(@Argument(name = "input") com.student.dto.StudentInput input) {
         Student student = Student.builder()
-                .name(name)
-                .contact(contact)
+                .name(input.getName())
+                .contact(input.getContact())
                 .build();
         return studentService.addStudent(student);
+    }
+
+    @MutationMapping
+    public StudentResponse updateStudent(@Argument Long id, @Argument(name = "input") com.student.dto.StudentInput input) {
+        Student student = Student.builder()
+                .id(id)
+                .name(input.getName())
+                .contact(input.getContact())
+                .build();
+        return studentService.updateStudent(id, student);
+    }
+
+    @MutationMapping
+    public StudentResponse deleteStudent(@Argument Long id) {
+        return studentService.deleteStudent(id);
     }
 }
